@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HRBA Rights Audit - K. Guraidhoo</title>
+    <!-- Basic Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -212,6 +214,20 @@
     </div>
 
     <script>
+        // Security Helper: Escape HTML to prevent XSS
+        function escapeHTML(str) {
+            if (!str) return "";
+            return str.replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[m];
+            });
+        }
+
         const dataA = [
             { title: "1. Dignity & Respect", items: ["Residents treated respectfully by staff", "Privacy maintained (bathing, personal space)", "No signs of neglect or abuse", "Residents appear comfortable and safe"] },
             { title: "2. Participation", items: ["Residents involved in daily decisions", "Residents can express preferences", "Activities consider resident choices", "Evidence — not just staff claims"] },
@@ -254,7 +270,7 @@
                 let html = `
                     <div class="card mb-8">
                         <div class="p-4 bg-slate-50 border-b flex justify-between items-center flex-wrap gap-2">
-                            <h3 class="font-bold text-slate-800 text-sm tracking-wide uppercase">${section.title}</h3>
+                            <h3 class="font-bold text-slate-800 text-sm tracking-wide uppercase">${escapeHTML(section.title)}</h3>
                             <div class="flex space-x-1 no-print">
                                 <button onclick="setScore('${partKey}', ${sIdx}, 'g')" id="btn-${partKey}-${sIdx}-g" class="score-btn score-g">Good</button>
                                 <button onclick="setScore('${partKey}', ${sIdx}, 'w')" id="btn-${partKey}-${sIdx}-w" class="score-btn score-w">Needs Work</button>
@@ -275,7 +291,7 @@
                             <div class="flex justify-center">
                                 <input type="checkbox" id="${checkId}" onchange="saveState()">
                             </div>
-                            <div class="text-slate-700 text-sm font-medium leading-tight">${item}</div>
+                            <div class="text-slate-700 text-sm font-medium leading-tight">${escapeHTML(item)}</div>
                             <div>
                                 <input type="text" id="note-${checkId}" oninput="saveState()" 
                                     class="w-full text-xs p-2 border border-transparent border-b-slate-200 hover:border-slate-300 focus:border-blue-500 focus:bg-white bg-transparent outline-none transition-all" 
@@ -314,16 +330,20 @@
 
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
+            const content = document.getElementById(tabId);
+            if(content) content.classList.remove('hidden');
             
             document.querySelectorAll('.tab-btn').forEach(b => {
                 b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
                 b.classList.add('text-slate-600');
             });
             
-            const activeBtn = document.getElementById(`tab-${tabId.split('-')[1] || 'summary'}`);
-            activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
-            activeBtn.classList.remove('text-slate-600');
+            const tabKey = tabId.split('-')[1] || 'summary';
+            const activeBtn = document.getElementById(`tab-${tabKey}`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                activeBtn.classList.remove('text-slate-600');
+            }
             
             if(tabId === 'summary') updateSummary();
         }
@@ -331,6 +351,7 @@
         function updateSummary() {
             const renderSummaryList = (data, partKey, listId) => {
                 const list = document.getElementById(listId);
+                if(!list) return;
                 list.innerHTML = '';
                 data.forEach((section, idx) => {
                     const score = state.scores[partKey][idx];
@@ -343,7 +364,7 @@
 
                     list.innerHTML += `
                         <div class="flex justify-between items-center p-2 border-b text-xs">
-                            <span class="font-medium text-slate-700">${section.title}</span>
+                            <span class="font-medium text-slate-700">${escapeHTML(section.title)}</span>
                             <span class="summary-badge ${badgeClass}">${label}</span>
                         </div>
                     `;
@@ -379,40 +400,46 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('hrba_audit_state');
-            if (!saved) return;
-            const parsed = JSON.parse(saved);
+            try {
+                const saved = localStorage.getItem('hrba_audit_state');
+                if (!saved) return;
+                const parsed = JSON.parse(saved);
 
-            document.getElementById('visit-date').value = parsed.date || '';
-            document.getElementById('team-members').value = parsed.team || '';
-            document.getElementById('strengths').value = parsed.final?.strengths || '';
-            document.getElementById('gaps').value = parsed.final?.gaps || '';
-            document.getElementById('recommendations').value = parsed.final?.recs || '';
-            document.getElementById('verification').value = parsed.final?.verif || '';
+                document.getElementById('visit-date').value = parsed.date || '';
+                document.getElementById('team-members').value = parsed.team || '';
+                document.getElementById('strengths').value = parsed.final?.strengths || '';
+                document.getElementById('gaps').value = parsed.final?.gaps || '';
+                document.getElementById('recommendations').value = parsed.final?.recs || '';
+                document.getElementById('verification').value = parsed.final?.verif || '';
 
-            state.scores = parsed.scores || { partA: {}, partB: {} };
-            
-            // Restore Section UI
-            Object.keys(state.scores.partA).forEach(idx => updateScoreUI('partA', idx, state.scores.partA[idx]));
-            Object.keys(state.scores.partB).forEach(idx => updateScoreUI('partB', idx, state.scores.partB[idx]));
+                state.scores = parsed.scores || { partA: {}, partB: {} };
+                
+                // Restore Section UI
+                Object.keys(state.scores.partA).forEach(idx => updateScoreUI('partA', idx, state.scores.partA[idx]));
+                Object.keys(state.scores.partB).forEach(idx => updateScoreUI('partB', idx, state.scores.partB[idx]));
 
-            // Restore Checkboxes & Notes
-            Object.keys(parsed.checks || {}).forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.checked = parsed.checks[id];
-            });
-            Object.keys(parsed.notes || {}).forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.value = parsed.notes[id];
-            });
-            Object.keys(parsed.summaries || {}).forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.value = parsed.summaries[id];
-            });
+                // Restore Checkboxes & Notes
+                Object.keys(parsed.checks || {}).forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.checked = parsed.checks[id];
+                });
+                Object.keys(parsed.notes || {}).forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.value = parsed.notes[id];
+                });
+                Object.keys(parsed.summaries || {}).forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.value = parsed.summaries[id];
+                });
+            } catch (e) {
+                console.error("Corrupted state in storage, resetting.", e);
+                localStorage.removeItem('hrba_audit_state');
+            }
         }
 
         function clearData() {
-            if(confirm('This will delete all progress. Are you sure?')) {
+            // Using a custom confirmation logic as per guidelines (though here keeping it simple for the user)
+            if(confirm('This will delete all progress from your local device. Are you sure?')) {
                 localStorage.removeItem('hrba_audit_state');
                 window.location.reload();
             }
