@@ -89,6 +89,7 @@
             .max-w-5xl { max-width: 100%; }
             #summary { margin-top: 2rem; }
             input, textarea { border: none !important; background: transparent !important; }
+            .audit-row { grid-template-columns: 30px 1.2fr 2fr; }
         }
     </style>
 </head>
@@ -152,12 +153,12 @@
         <!-- Content Area -->
         <main>
             <div id="part-a" class="tab-content">
-                <h2 class="text-xl font-bold text-slate-800 mb-4 px-1 uppercase">Part A — HPSN Center Audit</h2>
+                <h2 class="text-xl font-bold text-slate-800 mb-4 px-1 uppercase">PART A — HPSN Center Audit</h2>
                 <div id="hpsn-subsections"></div>
             </div>
 
             <div id="part-b" class="tab-content hidden">
-                <h2 class="text-xl font-bold text-slate-800 mb-4 px-1 uppercase">Part B — Island Community Audit</h2>
+                <h2 class="text-xl font-bold text-slate-800 mb-4 px-1 uppercase">PART B — Island Community Audit</h2>
                 <div id="community-subsections"></div>
             </div>
 
@@ -376,12 +377,12 @@
             document.querySelectorAll('input[type="text"]').forEach(i => { if(i.id.startsWith('note-')) newState.notes[i.id] = i.value });
             document.querySelectorAll('textarea').forEach(i => { if(i.id.startsWith('summary-')) newState.summaries[i.id] = i.value });
 
-            localStorage.setItem('hrba_audit_v3_state', JSON.stringify(newState));
+            localStorage.setItem('hrba_audit_v4_state', JSON.stringify(newState));
         }
 
         function loadState() {
             try {
-                const saved = localStorage.getItem('hrba_audit_v3_state');
+                const saved = localStorage.getItem('hrba_audit_v4_state');
                 const parsed = saved ? JSON.parse(saved) : { scores: { partA: {}, partB: {} } };
 
                 document.getElementById('visit-date').value = parsed.date || '';
@@ -412,13 +413,13 @@
                     if(el) el.value = parsed.summaries[id];
                 });
             } catch (e) {
-                console.error("Storage error", e);
+                console.error("Storage load error", e);
             }
         }
 
         function clearData() {
-            if(confirm('This will delete all progress from your local device. Are you sure?')) {
-                localStorage.removeItem('hrba_audit_v3_state');
+            if(confirm('Warning: This will permanently delete all checklist data from your device storage. Proceed?')) {
+                localStorage.removeItem('hrba_audit_v4_state');
                 window.location.reload();
             }
         }
