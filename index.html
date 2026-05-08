@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HRBA Rights Audit - K. Guraidhoo</title>
-    <!-- Basic Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -22,13 +20,6 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
             border: 1px solid #e2e8f0;
-        }
-
-        .section-header {
-            background: #1e293b;
-            color: white;
-            padding: 1.25rem 1.5rem;
-            border-radius: 12px 12px 0 0;
         }
 
         .audit-row {
@@ -94,8 +85,10 @@
             .no-print { display: none !important; }
             body { background: white; padding: 0; }
             .card { box-shadow: none; border: 1px solid #e2e8f0; break-inside: avoid; }
-            .audit-section { display: block !important; }
+            .tab-content { display: block !important; }
             .max-w-5xl { max-width: 100%; }
+            #summary { margin-top: 2rem; }
+            input, textarea { border: none !important; background: transparent !important; }
         }
     </style>
 </head>
@@ -106,12 +99,13 @@
         <header class="mb-8 flex flex-col md:flex-row justify-between items-end border-b pb-6">
             <div class="text-left">
                 <h1 class="text-3xl font-bold text-slate-800 tracking-tight">K. GURAIDHOO FIELD VISIT</h1>
-                <p class="text-slate-500 font-medium">Human Rights-Based Approach (HRBA) Audit Tool</p>
+                <p class="text-slate-500 font-medium">HRBA Rights Audit — Observation & Survey Checklist</p>
+                <p class="text-xs text-slate-400 mt-1">Human Rights Based Approach (HRBA) Framework</p>
             </div>
             <div class="no-print mt-4 md:mt-0 flex gap-2">
                 <button onclick="clearData()" class="px-4 py-2 text-sm font-semibold text-red-600 bg-red-50 rounded-lg hover:bg-red-100">Reset Form</button>
-                <button onclick="window.print()" class="px-6 py-2 bg-slate-900 text-white rounded-lg font-bold hover:bg-slate-800 flex items-items gap-2">
-                    <span>Export Audit Report</span>
+                <button onclick="window.print()" class="px-6 py-2 bg-slate-900 text-white rounded-lg font-bold hover:bg-slate-800 flex items-center gap-2">
+                    <span>Export Report</span>
                 </button>
             </div>
         </header>
@@ -125,7 +119,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Team Members</label>
-                    <textarea id="team-members" oninput="saveState()" rows="2" class="w-full p-2 border rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter names..."></textarea>
+                    <textarea id="team-members" oninput="saveState()" rows="2" class="w-full p-2 border rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter team names..."></textarea>
                 </div>
             </div>
             <div class="card p-5 mb-0">
@@ -135,72 +129,70 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Sites Visited</label>
-                    <input type="text" id="sites-visited" oninput="saveState()" class="w-full p-2 border rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" value="HPSN Center, Island Council, WDC">
+                    <input type="text" id="sites-visited" oninput="saveState()" class="w-full p-2 border rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" value="HPSN Center + Island Council + WDC">
                 </div>
             </div>
         </div>
 
-        <!-- Evidence Rule Alert -->
+        <!-- Field Tip -->
         <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 rounded-r-lg shadow-sm">
             <div class="flex items-center gap-2 mb-1">
-                <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                <h3 class="font-bold text-amber-800">Field Tip — Evidence Rule</h3>
+                <h3 class="font-bold text-amber-800 uppercase text-xs tracking-wider">Field Tip — Evidence Rule</h3>
             </div>
-            <p class="text-sm text-amber-700 leading-relaxed">Only tick an item if you have evidence: <strong>what they say, what you see, and examples given</strong>. If these don't match — flag it as a gap regardless of what officials claim.</p>
+            <p class="text-sm text-amber-700 leading-relaxed">Only tick an item if you have evidence: what they say, what you see, and examples given. If these don't match — flag it as a gap regardless of what officials claim. Scoring: Good (G) | Needs Work (W) | Serious Gap (X)</p>
         </div>
 
-        <!-- Navigation Tabs -->
+        <!-- Navigation -->
         <nav class="flex space-x-1 mb-6 no-print bg-slate-200 p-1 rounded-xl w-fit">
-            <button onclick="showTab('part-a')" id="tab-a" class="tab-btn px-6 py-2 rounded-lg font-bold text-sm transition-all bg-white text-slate-900 shadow-sm">PART A: HPSN</button>
-            <button onclick="showTab('part-b')" id="tab-b" class="tab-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:text-slate-900">PART B: Community</button>
+            <button onclick="showTab('part-a')" id="tab-a" class="tab-btn px-6 py-2 rounded-lg font-bold text-sm transition-all bg-white text-slate-900 shadow-sm">PART A — HPSN</button>
+            <button onclick="showTab('part-b')" id="tab-b" class="tab-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:text-slate-900">PART B — Community</button>
             <button onclick="showTab('summary')" id="tab-summary" class="tab-btn px-6 py-2 rounded-lg font-bold text-sm transition-all text-slate-600 hover:text-slate-900">Final Summary</button>
         </nav>
 
         <!-- Content Area -->
         <main>
-            <!-- PART A -->
             <div id="part-a" class="tab-content">
+                <h2 class="text-xl font-bold text-slate-800 mb-4 px-1 uppercase">Part A — HPSN Center Audit</h2>
                 <div id="hpsn-subsections"></div>
             </div>
 
-            <!-- PART B -->
             <div id="part-b" class="tab-content hidden">
+                <h2 class="text-xl font-bold text-slate-800 mb-4 px-1 uppercase">Part B — Island Community Audit</h2>
                 <div id="community-subsections"></div>
             </div>
 
-            <!-- SUMMARY PAGE -->
             <div id="summary" class="tab-content hidden">
                 <div class="card p-6">
-                    <h2 class="text-2xl font-bold mb-6 text-slate-800 border-b pb-4">Audit Executive Summary</h2>
+                    <h2 class="text-2xl font-bold mb-6 text-slate-800 border-b pb-4">Section Scoring Summary</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <h3 class="font-bold text-slate-600 mb-4 uppercase text-sm tracking-wider">HPSN Center Status</h3>
+                            <h3 class="font-bold text-slate-600 mb-4 uppercase text-sm tracking-wider">HPSN Center Assessment</h3>
                             <div id="summary-list-a" class="space-y-2"></div>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-600 mb-4 uppercase text-sm tracking-wider">Island Community Status</h3>
+                            <h3 class="font-bold text-slate-600 mb-4 uppercase text-sm tracking-wider">Island Community Assessment</h3>
                             <div id="summary-list-b" class="space-y-2"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card p-6">
-                    <h2 class="text-xl font-bold mb-4 text-slate-800 border-b pb-2">Synthesis & Recommendations</h2>
-                    <div class="space-y-6">
+                    <h2 class="text-xl font-bold mb-4 text-slate-800 border-b pb-2">Overall Observations & Recommendations</h2>
+                    <div class="grid gap-6">
                         <div>
                             <label class="block text-sm font-bold text-slate-600 mb-2">Key strengths observed:</label>
-                            <textarea id="strengths" oninput="saveState()" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50" placeholder="Summarize main positive findings..."></textarea>
+                            <textarea id="strengths" oninput="saveState()" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50"></textarea>
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-600 mb-2">Key gaps identified:</label>
-                            <textarea id="gaps" oninput="saveState()" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50" placeholder="List critical human rights gaps..."></textarea>
+                            <textarea id="gaps" oninput="saveState()" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50"></textarea>
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-600 mb-2">Priority recommendations:</label>
-                            <textarea id="recommendations" oninput="saveState()" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50" placeholder="Actionable steps for authorities..."></textarea>
+                            <textarea id="recommendations" oninput="saveState()" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50"></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-slate-600 mb-2">Verification (Initials / Roles):</label>
+                            <label class="block text-sm font-bold text-slate-600 mb-2">Who was interviewed (initials / role):</label>
                             <input type="text" id="verification" oninput="saveState()" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 bg-slate-50">
                         </div>
                     </div>
@@ -209,57 +201,46 @@
         </main>
 
         <footer class="text-center text-slate-400 text-xs py-10 no-print">
-            Rights Audit Digital Engine • HRBA Framework • Confidential Field Document
+            Rights Audit Digital Engine — K. Guraidhoo
         </footer>
     </div>
 
     <script>
-        // Security Helper: Escape HTML to prevent XSS
         function escapeHTML(str) {
             if (!str) return "";
             return str.replace(/[&<>"']/g, function(m) {
-                return {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#39;'
-                }[m];
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
             });
         }
 
         const dataA = [
             { title: "1. Dignity & Respect", items: ["Residents treated respectfully by staff", "Privacy maintained (bathing, personal space)", "No signs of neglect or abuse", "Residents appear comfortable and safe"] },
             { title: "2. Participation", items: ["Residents involved in daily decisions", "Residents can express preferences", "Activities consider resident choices", "Evidence — not just staff claims"] },
-            { title: "3. Basic Needs & Care", items: ["Adequate food, clothing, hygiene", "Clean living environment", "Access to healthcare", "Access to therapy/rehabilitation", "Sufficient staff available"] },
-            { title: "4. Accessibility (Facility)", items: ["Ramps / step-free access", "Accessible toilets", "Safe movement inside facility", "Lighting and ventilation adequate", "Adaptations for different disabilities"] },
+            { title: "3. Basic Needs & Care", items: ["Adequate food, clothing, hygiene", "Clean living environment", "Access to healthcare", "Access to therapy/rehabilitation (if needed)", "Sufficient staff available"] },
+            { title: "4. Accessibility (Observe)", items: ["Ramps / step-free access", "Accessible toilets", "Safe movement inside facility", "Lighting and ventilation adequate", "Adaptations for different disabilities"] },
             { title: "5. Non-Discrimination", items: ["Equal treatment among residents", "No favoritism or exclusion", "Different needs accommodated"] },
             { title: "6. Safeguarding & Protection", items: ["Residents feel safe (ask + observe)", "Safeguarding measures in place", "Staff aware of protection responsibilities", "No visible unsafe conditions"] },
             { title: "7. Complaints & Feedback", items: ["Complaint system exists", "Residents/caregivers aware of it", "Safe to raise concerns", "Evidence of action taken"] },
             { title: "8. Staff Capacity", items: ["Staff trained in disability care", "Staff trained in basic rights", "Sufficient number of staff", "Staff able to explain challenges openly"] },
-            { title: "9. Family & Community Link", items: ["Family contact maintained", "Visits allowed and encouraged", "Residents participate in community activities", "Link with island services exists", "Support provided for reintegration", "Post-reintegration wellness checks"] },
-            { title: "10. Overall Living Conditions", items: ["Clean and organized environment", "Positive staff-resident interaction", "Residents engaged (not isolated)"] }
+            { title: "9. Family & Community Link", items: ["Family contact maintained", "Visits allowed and encouraged", "Residents participate in community activities", "Link with island services exists", "Support provided to family to prepare for reintegration", "Whether wellness checks occurs after reintegration"] },
+            { title: "10. Overall Living Conditions (Observe)", items: ["Clean and organized environment", "Positive staff-resident interaction", "Residents engaged (not isolated)"] }
         ];
 
         const dataB = [
-            { title: "1. Governance & Policy", items: ["Council aware of national policies", "Local plans include vulnerable groups", "Clear priority groups identified", "Evidence of actual programs"] },
-            { title: "2. Participation (Community)", items: ["Community consultations regular", "Women participate in decisions", "Youth inclusion documented", "Elderly inclusion documented", "Persons with disabilities included", "Actual participation (not token)"] },
-            { title: "3. Equity & Inclusion", items: ["Equal access to services reported", "Vulnerable groups identified", "Exclusion acknowledged honestly", "No visible discriminatory practices"] },
-            { title: "4. Access to Services", items: ["Health services accessible to all", "Education accessible to all", "Social support available", "Transport available/affordable", "Gaps identified by officials"] },
-            { title: "5. Targeted Programs", items: ["Programs for women", "Programs for youth", "Programs for disability support", "Programs for low-income", "Clear selection process"] },
-            { title: "6. Physical Accessibility", items: ["Public buildings have ramps", "Accessible toilets available", "Roads/pathways usable", "Inclusive public spaces", "PWD visible in community life"] },
-            { title: "7. Accountability", items: ["Complaint mechanism exists", "Community is aware of it", "Responses are provided", "Issue resolution examples given"] },
-            { title: "8. Budget & Resources", items: ["Budget for social programs", "Priorities clearly explained", "Resources considered sufficient", "Evidence of actual spending"] },
-            { title: "9. Coordination", items: ["Collaboration with HPSN", "Collaboration with NGOs", "Coordination is effective", "Coordination gaps identified"] },
-            { title: "10. Overall Inclusion", items: ["Inclusive environment", "Some exclusion visible", "Clear segregation observed"] }
+            { title: "1. Governance & Policy", items: ["Council/WDC aware of national social/rights policies", "Local plans include vulnerable groups", "Clear priority groups identified", "Evidence of programs — not just statements"] },
+            { title: "2. Participation", items: ["Community consultations conducted regularly", "Women participate in decision-making", "Youth included", "Elderly included", "Persons with disabilities included", "Evidence of actual participation (not token)"] },
+            { title: "3. Equity & Non-Discrimination", items: ["Equal access to services reported", "Vulnerable groups identified by council", "Reports of exclusion acknowledged honestly", "No visible discriminatory practices"] },
+            { title: "4. Access to Services", items: ["Health services accessible to all", "Education accessible to all", "Social support available", "Transport available and affordable", "Gaps identified by officials"] },
+            { title: "5. Targeted Programs", items: ["Programs for women", "Programs for youth", "Programs for persons with disabilities", "Programs for low-income households", "Beneficiary selection process is clear"] },
+            { title: "6. Accessibility (Observe + Ask)", items: ["Public buildings have ramps", "Accessible toilets available", "Roads/pathways usable for all", "Public spaces inclusive", "Persons with disabilities visible in community life"] },
+            { title: "7. Accountability", items: ["Complaint mechanism exists", "Community is aware of it", "Responses are provided", "Example of issue resolved given"] },
+            { title: "8. Budget & Resources", items: ["Budget allocated for social programs", "Priorities clearly explained", "Resources considered sufficient", "Evidence of actual spending"] },
+            { title: "9. Coordination", items: ["Collaboration with HSNP", "Collaboration with NGOs/agencies", "Coordination considered effective", "Gaps in coordination identified"] },
+            { title: "10. Overall Inclusion (Your Judgment)", items: ["Inclusive environment — people mix freely", "Some exclusion visible", "Clear segregation or marginalization observed"] }
         ];
 
         let state = {
-            metadata: {},
-            scores: { partA: {}, partB: {} },
-            checks: {},
-            notes: {},
-            recommendations: {}
+            scores: { partA: {}, partB: {} }
         };
 
         function renderSections(containerId, data, partKey) {
@@ -272,15 +253,15 @@
                         <div class="p-4 bg-slate-50 border-b flex justify-between items-center flex-wrap gap-2">
                             <h3 class="font-bold text-slate-800 text-sm tracking-wide uppercase">${escapeHTML(section.title)}</h3>
                             <div class="flex space-x-1 no-print">
-                                <button onclick="setScore('${partKey}', ${sIdx}, 'g')" id="btn-${partKey}-${sIdx}-g" class="score-btn score-g">Good</button>
-                                <button onclick="setScore('${partKey}', ${sIdx}, 'w')" id="btn-${partKey}-${sIdx}-w" class="score-btn score-w">Needs Work</button>
-                                <button onclick="setScore('${partKey}', ${sIdx}, 'x')" id="btn-${partKey}-${sIdx}-x" class="score-btn score-x">Serious Gap</button>
+                                <button onclick="setScore('${partKey}', ${sIdx}, 'g')" id="btn-${partKey}-${sIdx}-g" class="score-btn score-g">G</button>
+                                <button onclick="setScore('${partKey}', ${sIdx}, 'w')" id="btn-${partKey}-${sIdx}-w" class="score-btn score-w">W</button>
+                                <button onclick="setScore('${partKey}', ${sIdx}, 'x')" id="btn-${partKey}-${sIdx}-x" class="score-btn score-x">X</button>
                             </div>
                         </div>
                         <div class="audit-header grid grid-cols-3 gap-4 px-4 py-2 text-[10px] font-bold text-slate-400 uppercase border-b">
-                            <div class="text-center">Observed</div>
-                            <div>Audit Checklist Item</div>
-                            <div>Specific Evidence / Notes</div>
+                            <div class="text-center">Check</div>
+                            <div>Item</div>
+                            <div>Evidence / Notes</div>
                         </div>
                 `;
 
@@ -295,7 +276,7 @@
                             <div>
                                 <input type="text" id="note-${checkId}" oninput="saveState()" 
                                     class="w-full text-xs p-2 border border-transparent border-b-slate-200 hover:border-slate-300 focus:border-blue-500 focus:bg-white bg-transparent outline-none transition-all" 
-                                    placeholder="Click to log evidence...">
+                                    placeholder="Enter evidence...">
                             </div>
                         </div>
                     `;
@@ -305,7 +286,7 @@
                     <div class="p-3 bg-slate-50/50">
                         <textarea id="summary-${sectionId}" oninput="saveState()" 
                             class="w-full p-2 text-xs italic border-none rounded bg-transparent focus:ring-1 focus:ring-blue-200" 
-                            rows="2" placeholder="Overall section observation summary..."></textarea>
+                            rows="2" placeholder="Notes:"></textarea>
                     </div>
                 </div>`;
                 container.innerHTML += html;
@@ -330,8 +311,7 @@
 
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            const content = document.getElementById(tabId);
-            if(content) content.classList.remove('hidden');
+            document.getElementById(tabId).classList.remove('hidden');
             
             document.querySelectorAll('.tab-btn').forEach(b => {
                 b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
@@ -344,7 +324,6 @@
                 activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
                 activeBtn.classList.remove('text-slate-600');
             }
-            
             if(tabId === 'summary') updateSummary();
         }
 
@@ -393,24 +372,23 @@
                 }
             };
 
-            // Grab all dynamic inputs
             document.querySelectorAll('input[type="checkbox"]').forEach(i => newState.checks[i.id] = i.checked);
             document.querySelectorAll('input[type="text"]').forEach(i => { if(i.id.startsWith('note-')) newState.notes[i.id] = i.value });
             document.querySelectorAll('textarea').forEach(i => { if(i.id.startsWith('summary-')) newState.summaries[i.id] = i.value });
 
-            localStorage.setItem('hrba_audit_state', JSON.stringify(newState));
+            localStorage.setItem('hrba_audit_v3_state', JSON.stringify(newState));
         }
 
         function loadState() {
             try {
-                const saved = localStorage.getItem('hrba_audit_state');
-                if (!saved) return;
-                const parsed = JSON.parse(saved);
+                const saved = localStorage.getItem('hrba_audit_v3_state');
+                const parsed = saved ? JSON.parse(saved) : { scores: { partA: {}, partB: {} } };
 
                 document.getElementById('visit-date').value = parsed.date || '';
                 document.getElementById('team-members').value = parsed.team || '';
-                if (parsed.location) document.getElementById('location-name').value = parsed.location;
-                if (parsed.sites) document.getElementById('sites-visited').value = parsed.sites;
+                document.getElementById('location-name').value = parsed.location || 'K. Guraidhoo, Kaafu Atoll';
+                document.getElementById('sites-visited').value = parsed.sites || 'HPSN Center + Island Council + WDC';
+                
                 document.getElementById('strengths').value = parsed.final?.strengths || '';
                 document.getElementById('gaps').value = parsed.final?.gaps || '';
                 document.getElementById('recommendations').value = parsed.final?.recs || '';
@@ -418,11 +396,9 @@
 
                 state.scores = parsed.scores || { partA: {}, partB: {} };
                 
-                // Restore Section UI
                 Object.keys(state.scores.partA).forEach(idx => updateScoreUI('partA', idx, state.scores.partA[idx]));
                 Object.keys(state.scores.partB).forEach(idx => updateScoreUI('partB', idx, state.scores.partB[idx]));
 
-                // Restore Checkboxes & Notes
                 Object.keys(parsed.checks || {}).forEach(id => {
                     const el = document.getElementById(id);
                     if(el) el.checked = parsed.checks[id];
@@ -436,15 +412,13 @@
                     if(el) el.value = parsed.summaries[id];
                 });
             } catch (e) {
-                console.error("Corrupted state in storage, resetting.", e);
-                localStorage.removeItem('hrba_audit_state');
+                console.error("Storage error", e);
             }
         }
 
         function clearData() {
-            // Using a custom confirmation logic as per guidelines (though here keeping it simple for the user)
             if(confirm('This will delete all progress from your local device. Are you sure?')) {
-                localStorage.removeItem('hrba_audit_state');
+                localStorage.removeItem('hrba_audit_v3_state');
                 window.location.reload();
             }
         }
