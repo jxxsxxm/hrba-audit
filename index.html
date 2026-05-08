@@ -131,11 +131,11 @@
             <div class="card p-5 mb-0">
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Location</label>
-                    <div class="p-2 border rounded-lg bg-slate-100 text-slate-600 font-semibold">K. Guraidhoo, Kaafu Atoll</div>
+                    <input type="text" id="location-name" oninput="saveState()" class="w-full p-2 border rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" value="K. Guraidhoo, Kaafu Atoll">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Sites Visited</label>
-                    <div class="p-2 border rounded-lg bg-slate-100 text-slate-600 font-semibold">HPSN Center + Island Council + WDC</div>
+                    <input type="text" id="sites-visited" oninput="saveState()" class="w-full p-2 border rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none" value="HPSN Center, Island Council, WDC">
                 </div>
             </div>
         </div>
@@ -379,6 +379,8 @@
             const newState = {
                 date: document.getElementById('visit-date').value,
                 team: document.getElementById('team-members').value,
+                location: document.getElementById('location-name').value,
+                sites: document.getElementById('sites-visited').value,
                 scores: state.scores,
                 checks: {},
                 notes: {},
@@ -407,6 +409,8 @@
 
                 document.getElementById('visit-date').value = parsed.date || '';
                 document.getElementById('team-members').value = parsed.team || '';
+                if (parsed.location) document.getElementById('location-name').value = parsed.location;
+                if (parsed.sites) document.getElementById('sites-visited').value = parsed.sites;
                 document.getElementById('strengths').value = parsed.final?.strengths || '';
                 document.getElementById('gaps').value = parsed.final?.gaps || '';
                 document.getElementById('recommendations').value = parsed.final?.recs || '';
